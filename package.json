@@ -1,0 +1,24 @@
+{
+  "name": "mistletoe",
+  "version": "1.0.0",
+  "description": "Static blog generator that keeps it simple, stupid. You know, like a kiss under the mistletoe.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kim3er/mistletoe.git"
+  },
+  "keywords": [
+    "static",
+    "blog",
+    "generator"
+  ],
+  "author": "Rich Kimber (http://rich.k3r.me)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kim3er/mistletoe/issues"
+  },
+  "homepage": "https://github.com/kim3er/mistletoe#readme"
+}
