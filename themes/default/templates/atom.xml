@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Adventures in brine]]></title>
+  <link href="http://rich.k3r.me/atom.xml" rel="self"/>
+  <link href="http://rich.k3r.me/"/>
+  <updated>{{ lastUpdated | date }}</updated>
+  <id>http://rich.k3r.me/</id>
+  <author>
+    <name><![CDATA[Richard Kimber]]></name>
+
+  </author>
+  <generator uri="http://rich.k3r.me/">Mistletoe</generator>
+
+  {% for year in postsByYear %}
+    {% for post in year.posts %}
+  <entry>
+    <title type="html"><![CDATA[{{ post.attribute.title }}]]></title>
+    <link href="http://rich.k3r.me{{ post.url }}"/>
+    <updated>{{ post.date | date }}</updated>
+    <id>http://rich.k3r.me{{ post.url }}</id>
+    <content type="html"><![CDATA[{{ post.body | safe }}]]></content>
+  </entry>
+    {% endfor %}
+  {% endfor %}
+
+</feed>

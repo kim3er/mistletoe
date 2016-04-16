@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import "helpers.html" as helpers %}
+
+{% block content %}
+<div>
+	<article role="article">
+		<header>
+			<h1 class="entry-title">
+				Category: {{ name }}
+			</h1>
+		</header>
+
+		<div id="blog-archives" class="category">
+		{% for year in years %}
+			<h2>{{ year.name }}</h2>
+			{% for post in year.posts %}
+				{{ helpers.summary(post) }}
+			{% endfor %}
+		{% endfor %}
+		</div>
+	</article>
+</div>
+{% endblock %}

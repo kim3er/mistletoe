@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+
+program
+	.option('-f, --force', 'continue even if directory already exists')
+	.parse(process.argv);
+
+require('../lib/create').default(program.args[0], program.force);
+
+process.on('unhandledRejection', function(reason, p) {
+	console.log(reason);
+});
+

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% import "helpers.html" as helpers %}
+
+{% block content %}
+<div>
+	<article class="hentry" role="article">
+		<header>
+			<h1 class="entry-title">
+				{{ title }}
+			</h1>
+
+			<p class="meta">
+				{{ helpers.long_date(date) }}
+				| {{ helpers.comments_link(url) }}
+			</p>
+		</header>
+
+		<div class="entry-content">
+			{{ body | safe }}
+		</div>
+
+		<footer>
+			<p class="meta">
+				<span class="byline author vcard">
+					Posted by <span class="fn">Richard Kimber</span>
+				</span>
+				{{ helpers.long_date(date) }}
+				{{ helpers.categories(categories) }}
+			</p>
+
+			<div class="sharing">
+				<a href="//twitter.com/share" class="twitter-share-button" data-url="http://rich.k3r.me{{ url }}" data-via="kim3er" data-counturl="http://rich.k3r.me{{ url }}">
+					Tweet
+				</a>
+				<div class="g-plusone" data-size="medium"></div>
+				<div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+			</div>
+
+			<p class="meta">
+				{% if prev %}
+					<a class="basic-alignment left" href="{{ prev.url }}" title="Previous Post: {{ prev.title }}">&laquo; {{ prev.title }}</a>
+				{% endif %}
+
+				{% if next %}
+					<a class="basic-alignment right" href="{{ next.url }}" title="Next Post: {{ prev.title }}">{{ next.title }} &raquo;</a>
+				{% endif %}
+			</p>
+		</footer>
+	</article>
+
+	<section>
+		<h1>Comments</h1>
+		<div id="disqus_thread" aria-live="polite">
+			<noscript>
+				Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+			</noscript>
+		</div>
+	</section>
+
+</div>
+
+<script type="text/javascript">
+      var disqus_shortname = 'k3r';
+
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://rich.k3r.me{{ url }}';
+        var disqus_url = 'http://rich.k3r.me{{ url }}';
+        var disqus_script = 'embed.js';
+
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+{% endblock %}

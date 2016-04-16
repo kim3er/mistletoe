@@ -1,0 +1,12 @@
+@import 'components/compass';
+@import 'components/syntax';
+@import 'components/styles';
+
+pre {
+	overflow: auto;
+}
+
+img {
+	margin: 0 auto;
+	display: block;
+}
