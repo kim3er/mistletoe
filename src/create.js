@@ -54,6 +54,8 @@ export default async function create(name, force) {
 		await fsh.mkdirp(path.join(projectRoot, dir));
 	}
 
+	await fsh.cpdir(path.join(__dirname, '../templates'), projectRoot);
+
 	await fsh.writeFile(path.join(projectRoot, '.mistletoerc'), JSON.stringify(projectDefaults, null, 2));
 
 	await git.init(projectRoot);

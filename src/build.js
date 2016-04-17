@@ -36,14 +36,20 @@ export default async function build() {
 
 	await (async function() {
 		const processors = {
-			'.scss': function(file) {
+			'.scss': function(data) {
 				return new Promise(function(resolve, reject) {
-					sass.render({ file }, function(err, result) {
+					sass.render({
+						data: buffer,
+						includePaths: data.dir
+					}, function(err, result) {
 						if (err) {
 							reject(err);
 						}
 						else {
-							resolve(result.css);
+							resolve({
+								buffer: result.css,
+								ext: '.css'
+							});
 						}
 					});
 				});
@@ -52,6 +58,21 @@ export default async function build() {
 
 		const processorExtnames = Object.keys(processors);
 
+		await fsh.cpdir(
+			`${settings.srcPath}/stylesheets`,
+			`${settings.buildPath}/stylesheets`,
+			function(data) {
+				let processor;
+
+				if (processorExtnames.includes(data.ext)) {
+					processor = processors[data.ext];
+					destFileName = `${path.basename(entry, extname)}${'.css'}`;
+				}
+				else {
+					destFileName = entry;
+				}
+			}
+		);
 		async function processDir(dir) {
 			const ls = await fsh.readdir(dir);
 

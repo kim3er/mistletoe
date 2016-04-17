@@ -1,4 +1,6 @@
 import fs from 'fs';
+import path from 'path';
+
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
 
@@ -22,6 +24,63 @@ export default class FsHelpers {
 
 			rd.pipe(wr);
 		});
+	}
+
+	static async rundir(dir, func, dotFiles = false, partials = false) {
+		const entries = await FsHelpers.readdir(dir);
+		for (const entry of entries) {
+			if (!dotFiles && entry.startsWith('.')) {
+				continue;
+			}
+
+			const entryPath = path.join(dir, entry);
+			if ((await FsHelpers.lstat(entryPath)).isDirectory()) {
+				await FsHelpers.rundir(entryPath, func, dotFiles, partials);
+			}
+			else {
+				if (!partials && entry.startsWith('_')) {
+					continue;
+				}
+
+				await func(dir, entry);
+			}
+		}
+	}
+
+	static async cpdir(dir, targetDir, func, dotFiles = false, partials = false) {
+		await FsHelpers.rundir(dir, async function(entryDir, entry) {
+			const entryPath = path.join(entryDir, entry);
+
+			const pathFragment = entryDir.slice(dir.length),
+				destDir = path.join(targetDir, pathFragment);
+
+			await FsHelpers.mkdirp(destDir);
+
+			if (func) {
+				const file = path.parse(entryPath);
+				file.buffer = await FsHelpers.readFile(entryPath);
+
+				const data = await func(file);
+
+				if (!data.buffer) {
+					data.buffer = file.buffer;
+				}
+
+				if (!data.name) {
+					data.name = file.name;
+				}
+
+				if (!data.ext) {
+					data.ext = file.ext;
+				}
+
+				await FsHelpers.writeFile(
+					path.join(destDir, `${data.name}${data.ext}`), data.buffer);
+			}
+			else {
+				await FsHelpers.cp(entryPath, path.join(destDir, entry));
+			}
+		}, dotFiles, partials);
 	}
 
 	static lstat(path) {
