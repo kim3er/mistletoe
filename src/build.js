@@ -62,65 +62,13 @@ export default async function build() {
 			`${settings.srcPath}/stylesheets`,
 			`${settings.buildPath}/stylesheets`,
 			function(data) {
-				let processor;
-
 				if (processorExtnames.includes(data.ext)) {
-					processor = processors[data.ext];
-					destFileName = `${path.basename(entry, extname)}${'.css'}`;
+					data = Object.assign(data, processors[data.ext](data));
 				}
-				else {
-					destFileName = entry;
-				}
+
+				return data;
 			}
 		);
-		async function processDir(dir) {
-			const ls = await fsh.readdir(dir);
-
-			for (const entry of ls) {
-				if (entry.startsWith('.')) {
-					continue;
-				}
-
-				const entryPath = `${dir}/${entry}`;
-
-				if ((await fsh.lstat(entryPath)).isDirectory()) {
-					await processDir(entryPath);
-				}
-				else {
-					if (entry.startsWith('_')) {
-						continue;
-					}
-
-					let destFileName, processor;
-
-					const extname = path.extname(entry);
-					if (processorExtnames.includes(extname)) {
-						processor = processors[extname];
-						destFileName = `${path.basename(entry, extname)}${'.css'}`;
-					}
-					else {
-						destFileName = entry;
-					}
-
-					const pathFragment = dir.slice(settings.srcPath.length),
-						srcPath = path.join(projectRoot, entryPath),
-						destDir = path.join(projectRoot, settings.buildPath, pathFragment),
-						destPath = path.join(destDir, destFileName);
-
-					await fsh.mkdirp(destDir);
-
-					if (processor) {
-						const buffer = await processor(srcPath);
-						fsh.writeFile(destPath, buffer);
-					}
-					else {
-						await fsh.cp(srcPath, destPath);
-					}
-				}
-			}
-		}
-
-		await processDir(`${settings.srcPath}/stylesheets`);
 	})();
 
 	async function copyImages(dir) {
